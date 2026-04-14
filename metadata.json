@@ -1,0 +1,8 @@
+{
+  "name": "元界智创",
+  "description": "一个基于AI的3D资产管理与创作平台，支持相机扫描、本地上传及资产导出。",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": []
+}
