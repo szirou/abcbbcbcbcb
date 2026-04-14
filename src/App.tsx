@@ -233,21 +233,15 @@ export default function App() {
                   )}
                 >
                   <div className="relative w-full aspect-square bg-white/5 rounded-2xl overflow-hidden">
-                    {asset.status === 'ready' ? (
-                      <div className="w-full h-full pointer-events-none">
-                        <ModelViewer />
-                      </div>
-                    ) : (
-                      <img 
-                        src={asset.image} 
-                        alt={asset.name}
-                        referrerPolicy="no-referrer"
-                        className={cn(
-                          "w-full h-full object-cover transition-transform duration-500 group-hover:scale-110",
-                          asset.status === 'processing' && "blur-[2px] opacity-60"
-                        )}
-                      />
-                    )}
+                    <img 
+                      src={asset.image} 
+                      alt={asset.name}
+                      referrerPolicy="no-referrer"
+                      className={cn(
+                        "w-full h-full object-cover transition-transform duration-500 group-hover:scale-110",
+                        asset.status === 'processing' && "blur-[2px] opacity-60"
+                      )}
+                    />
                     {asset.status === 'ready' && (
                       <div className="absolute top-2 right-2 bg-primary/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
                         {asset.type}
@@ -491,14 +485,36 @@ export default function App() {
                 <ChevronLeft className="w-6 h-6" />
               </button>
               
-              <div className="relative w-full h-full flex items-center justify-center">
-                <ModelViewer />
+              <div className="relative w-full max-w-sm aspect-square flex items-center justify-center perspective-[1000px] touch-none">
+                {/* 3D Floor Shadow */}
+                <div className="absolute bottom-10 w-3/4 h-4 bg-black/40 blur-xl rounded-[100%] scale-x-150" />
                 
-                <div className="absolute bottom-12 flex flex-col items-center gap-1 opacity-70 pointer-events-none">
+                <motion.div
+                  className="w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing z-10"
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0}
+                  onDrag={(_, info) => {
+                    setRotationY(prev => prev + info.delta.x * 0.5);
+                  }}
+                >
+                  <motion.img 
+                    src={selectedAsset.image} 
+                    alt={selectedAsset.name}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-contain scale-110 pointer-events-none drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+                    style={{ 
+                      rotateY: rotationY,
+                      transformStyle: "preserve-3d"
+                    }}
+                  />
+                </motion.div>
+                
+                <div className="absolute bottom-[-40px] flex flex-col items-center gap-1 opacity-70 pointer-events-none">
                   <Rotate3d className="w-8 h-8" />
                   <div className="flex flex-col items-center">
-                    <span className="text-[10px] font-light tracking-[0.2em] uppercase">Drag to rotate</span>
-                    <span className="text-[10px] font-light tracking-[0.2em]">拖拽以旋转查看</span>
+                    <span className="text-[10px] font-light tracking-[0.2em] uppercase">Slide to rotate</span>
+                    <span className="text-[10px] font-light tracking-[0.2em]">滑动以旋转</span>
                   </div>
                 </div>
               </div>
@@ -658,11 +674,13 @@ export default function App() {
             <main className="flex-1 flex flex-col items-center px-6 py-8 bg-[radial-gradient(at_0%_0%,rgba(19,127,236,0.15)_0,transparent_50%),radial-gradient(at_100%_100%,rgba(19,127,236,0.1)_0,transparent_50%)]">
               <div className="w-full max-w-sm aspect-square relative mb-12">
                 <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl opacity-30" />
-                <div className="relative w-full h-full rounded-full border-4 border-white/10 shadow-2xl overflow-hidden bg-gray-900 flex items-center justify-center">
-                  <ModelViewer />
-                  
+                <div className="relative w-full h-full rounded-full border-4 border-white/10 shadow-2xl overflow-hidden bg-gray-900 flex items-center justify-center p-2">
+                  <div 
+                    className="w-full h-full rounded-full bg-center bg-no-repeat bg-cover"
+                    style={{ backgroundImage: `url("${uploadedImage || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAQczea7oxQT86TeriSDpIRo6vWU04ymjIE4IGGGVoJr0yA9h9bMtxFCjak1kVgo6EyF4FKjlnlB5hP7WdxkXILD8A43NGI0ZOf4pch6YUwBaYmFH5LZffxeFvkyy2BI_xd7Rfa_DaVMGU_4qcZy8xbCl-K1GrBTiD78lKjjKMN5bxP3aFTnoBLd6Y_mLQXepXzHVqiaMRKrVpGXaIk9KS9tSCm9tDj_IOK-OdQWgpHigReYVzizshsT_740ddC0cI0-4glZEDk-68'}")` }}
+                  />
                   <motion.div 
-                    className="absolute inset-x-0 h-[1px] bg-primary top-1/2 pointer-events-none z-20"
+                    className="absolute inset-x-0 h-[1px] bg-primary top-1/2 pointer-events-none"
                     animate={{ top: ['0%', '100%', '0%'] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                   />
