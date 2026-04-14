@@ -233,15 +233,21 @@ export default function App() {
                   )}
                 >
                   <div className="relative w-full aspect-square bg-white/5 rounded-2xl overflow-hidden">
-                    <img 
-                      src={asset.image} 
-                      alt={asset.name}
-                      referrerPolicy="no-referrer"
-                      className={cn(
-                        "w-full h-full object-cover transition-transform duration-500 group-hover:scale-110",
-                        asset.status === 'processing' && "blur-[2px] opacity-60"
-                      )}
-                    />
+                    {asset.status === 'ready' ? (
+                      <div className="w-full h-full pointer-events-none">
+                        <ModelViewer />
+                      </div>
+                    ) : (
+                      <img 
+                        src={asset.image} 
+                        alt={asset.name}
+                        referrerPolicy="no-referrer"
+                        className={cn(
+                          "w-full h-full object-cover transition-transform duration-500 group-hover:scale-110",
+                          asset.status === 'processing' && "blur-[2px] opacity-60"
+                        )}
+                      />
+                    )}
                     {asset.status === 'ready' && (
                       <div className="absolute top-2 right-2 bg-primary/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
                         {asset.type}
